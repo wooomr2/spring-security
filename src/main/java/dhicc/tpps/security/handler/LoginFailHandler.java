@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class LoginFailHandler implements AuthenticationFailureHandler {
@@ -25,7 +27,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         log.error("=== [인증오류] 아이디 혹은 비밀번호가 올바르지 않습니다. ===");
 
         ErrorResponse errorResponse = ErrorResponse.builder()

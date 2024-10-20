@@ -34,7 +34,6 @@ public class SecurityConfig {
     private final AuthProcessingFilter authProcessingFilter;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
-
     private final CustomLogoutHandler customLogoutHandler;
 
     private static final String[] WHITE_LIST_URL = {
@@ -79,7 +78,6 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
-
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .exceptionHandling(e -> e

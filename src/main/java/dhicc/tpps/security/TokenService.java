@@ -13,6 +13,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class TokenService {
+    
     private final RefreshTokenRepository refreshTokenRepository;
 
     public List<RefreshToken> findValidRefreshTokens(User user) {
@@ -33,7 +34,7 @@ public class TokenService {
         refreshTokenRepository.saveAll(validTokens);
     }
 
-    public void saveRefreshToken(User user, String refreshToken) {
+    public void saveNewRefreshToken(User user, String refreshToken) {
         refreshTokenRepository.save(RefreshToken.builder()
                 .userId(user.getId())
                 .refreshToken(refreshToken)

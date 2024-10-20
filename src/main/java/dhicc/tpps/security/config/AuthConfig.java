@@ -1,10 +1,8 @@
 package dhicc.tpps.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dhicc.tpps.security.TokenService;
 import dhicc.tpps.repository.UserRepository;
 import dhicc.tpps.security.CustomAuditAware;
-import dhicc.tpps.security.JwtUtil;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.handler.LoginFailHandler;
 import dhicc.tpps.security.handler.LoginSuccessHandler;
@@ -28,10 +26,8 @@ public class AuthConfig {
 
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
-
-    //  TODO:: Bean등록하든 뭘하든 삭제하느 방법을 찾자.
-    private final JwtUtil jwtUtil;
-    private final TokenService tokenService;
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailHandler loginFailHandler;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -57,8 +53,8 @@ public class AuthConfig {
     public AuthProcessingFilter authProcessingFilter() {
         AuthProcessingFilter filter = new AuthProcessingFilter("/api/v1/auth/login", objectMapper);
         filter.setAuthenticationManager(authenticationManager());
-        filter.setAuthenticationSuccessHandler(new LoginSuccessHandler(jwtUtil, tokenService, objectMapper));
-        filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
+        filter.setAuthenticationSuccessHandler(loginSuccessHandler);
+        filter.setAuthenticationFailureHandler(loginFailHandler);
 
         return filter;
     }
