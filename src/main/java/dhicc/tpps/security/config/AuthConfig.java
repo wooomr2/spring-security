@@ -63,4 +63,14 @@ public class AuthConfig {
     public AuditorAware<Long> auditorAware() {
         return new CustomAuditAware();
     }
+
+//    @Bean
+//    public RoleHierarchyImpl roleHierarchy(RoleHierarchyService roleHierarchyService){
+//
+//        String allHierarchy = roleHierarchyService.findAllHierarchy();
+//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//        roleHierarchy.setHierarchy(allHierarchy);
+//
+//        return roleHierarchy;
+//    }
 }

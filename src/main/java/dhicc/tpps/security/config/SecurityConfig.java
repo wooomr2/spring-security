@@ -71,6 +71,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(v -> v.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->

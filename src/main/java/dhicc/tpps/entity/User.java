@@ -46,4 +46,12 @@ public class User extends BaseEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return userRoles.stream()
+//                .map(Role::getRoleName)
+//                .collect(Collectors.toSet())
+//                .stream()
+//                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+//    }
 }
