@@ -1,6 +1,8 @@
 package dhicc.tpps.advice;
 
 import dhicc.tpps.exception.DhiccException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +51,18 @@ public class ExceptionAdvice {
         log.error(" === NOT_FOUND EXCEPTION ===", e);
 
         int status = HttpStatus.NOT_FOUND.value();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(status)
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(status).body(body);
+    }
+
+    @ExceptionHandler({JwtException.class, ExpiredJwtException.class})
+    public ResponseEntity<ErrorResponse> handleExpiredJwtException(NoResourceFoundException e) {
+        int status = HttpStatus.UNAUTHORIZED.value();
 
         ErrorResponse body = ErrorResponse.builder()
                 .code(status)
