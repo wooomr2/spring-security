@@ -2,6 +2,7 @@ package dhicc.tpps.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dhicc.tpps.advice.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,12 +34,15 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     ) throws IOException {
         try {
             filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException ex) {
+            log.error("ExpiredJwtException: {}", ex.getMessage());
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "JWT 토큰 만료");
         } catch (JwtException ex) {
             log.error("JwtException: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "JWT 인증 오류");
         } catch (Exception ex) {
             log.error("Exception: {}", ex.getMessage());
-            sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "SPRING-SECURITY INTERNAL_SERVER_ERROR");
+            sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "시큐리티 에러");
         }
     }
 
