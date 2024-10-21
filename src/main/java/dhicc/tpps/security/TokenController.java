@@ -40,7 +40,8 @@ public class TokenController {
         final String refreshToken = authHeader.substring(7);
         List<RefreshToken> dbRefreshTokens = tokenService.findValidRefreshTokens(user);
 
-        if (!jwtUtil.isTokenValid(refreshToken, user) || dbRefreshTokens.stream().noneMatch(token -> token.getRefreshToken().equals(refreshToken))) {
+        if (!jwtUtil.isTokenValid(refreshToken, user)
+                || dbRefreshTokens.stream().noneMatch(token -> token.getRefreshToken().equals(refreshToken))) {
             throw new JwtException("Invalid refresh token");
         }
 
