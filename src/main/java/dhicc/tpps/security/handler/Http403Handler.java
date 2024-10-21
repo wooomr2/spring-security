@@ -27,7 +27,7 @@ public class Http403Handler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("=== [인증오류] 403 {} ===", accessDeniedException.getMessage());
+        log.error("=== [인증오류] 403 허용되지 않은 권한입니다. {} ===", accessDeniedException.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.value())

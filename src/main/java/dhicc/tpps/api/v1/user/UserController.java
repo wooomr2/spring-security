@@ -3,11 +3,11 @@ package dhicc.tpps.api.v1.user;
 import dhicc.tpps.api.v1.user.request.ChangePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
 
