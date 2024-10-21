@@ -33,7 +33,7 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
     // Spring
     private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
     private final HandlerMappingIntrospector handlerMappingIntrospector;
-//    private final RoleHierarchyImpl roleHierarchy;
+    private final RoleHierarchyImpl roleHierarchy;
     // 구현
     private final ResourceRepository resourceRepository;
     private DynamicAuthorizationService dynamicAuthorizationService;
@@ -75,13 +75,14 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
 
     private AuthorizationManager<RequestAuthorizationContext> customAuthorizationManager(String role) {
         if (role.startsWith("ROLE")) {
-            AuthorityAuthorizationManager<RequestAuthorizationContext> authorizationManager = AuthorityAuthorizationManager.hasRole(role);
-//            authorizationManager.setRoleHierarchy(roleHierarchy);
+//            AuthorityAuthorizationManager<RequestAuthorizationContext> authorizationManager = AuthorityAuthorizationManager.hasRole(role);
+            AuthorityAuthorizationManager<RequestAuthorizationContext> authorizationManager = AuthorityAuthorizationManager.hasAuthority(role);
+            authorizationManager.setRoleHierarchy(roleHierarchy);
 
             return authorizationManager;
         } else {
             DefaultHttpSecurityExpressionHandler handler = new DefaultHttpSecurityExpressionHandler();
-//            handler.setRoleHierarchy(roleHierarchy);
+            handler.setRoleHierarchy(roleHierarchy);
 
             WebExpressionAuthorizationManager authorizationManager = new WebExpressionAuthorizationManager(role);
             authorizationManager.setExpressionHandler(handler);

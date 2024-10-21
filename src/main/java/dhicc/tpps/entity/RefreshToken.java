@@ -17,13 +17,15 @@ public class RefreshToken {
     @Column(name = "refresh_token_id")
     public Long id;
 
-    @Column(name="user_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     public Long userId;
 
-    @Column(unique = true, name="refresh_token", nullable = false)
+    @Column(unique = true, name = "refresh_token", nullable = false)
     public String refreshToken;
 
-    public boolean revoked;
+    @Column(nullable = false)
+    public boolean revoked = false;
 
-    public boolean expired;
+    @Column(nullable = false)
+    public boolean expired = false;
 }

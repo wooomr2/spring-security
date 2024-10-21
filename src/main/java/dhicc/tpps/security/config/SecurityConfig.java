@@ -1,6 +1,5 @@
 package dhicc.tpps.security.config;
 
-import dhicc.tpps.enums.ENUM_ROLE;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.filter.JwtAuthenticationFilter;
 import dhicc.tpps.security.filter.JwtExceptionFilter;
@@ -10,11 +9,13 @@ import dhicc.tpps.security.handler.Http403Handler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,11 +36,11 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final CustomLogoutHandler customLogoutHandler;
+    private final AuthorizationManager<RequestAuthorizationContext> authorizationManager;
 
     private static final String[] WHITE_LIST_URL = {
-            "health-check",
+            "/health-check",
             "/api/v1/auth/**",
-            "/api/v1/auth/signup",
             "/v1/api-docs/**",
             "/swagger-resources/**",
             "/swagger-ui/**",
@@ -75,11 +76,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(v -> v.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
+//                        req.requestMatchers(WHITE_LIST_URL)
+//                                .permitAll()
+//                                .requestMatchers("/api/v1/user/**").hasAnyAuthority("ROLE_USER")
+//                                .requestMatchers("/api/v1/manager/**").hasAuthority("ROLE_MANAGER")
+//                                .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+//                                .anyRequest()
+//                                .authenticated()
+
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/admin/**").hasRole(ENUM_ROLE.ADMIN.name())
-                                .anyRequest()
-                                .authenticated()
+                                .anyRequest().access(authorizationManager)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .exceptionHandling(e -> e

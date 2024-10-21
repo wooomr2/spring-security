@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails {
 
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(name = "tb_user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -43,15 +43,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return userRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toSet())
+                .stream()
+                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return userRoles.stream()
-//                .map(Role::getRoleName)
-//                .collect(Collectors.toSet())
-//                .stream()
-//                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//    }
 }

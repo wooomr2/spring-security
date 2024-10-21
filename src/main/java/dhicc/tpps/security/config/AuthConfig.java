@@ -6,10 +6,12 @@ import dhicc.tpps.security.CustomAuditAware;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.handler.LoginFailHandler;
 import dhicc.tpps.security.handler.LoginSuccessHandler;
+import dhicc.tpps.security.service.RoleHierarchyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,8 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-//TODO::
-//@EnableConfigurationProperties(JwtProperties.class)
 @RequiredArgsConstructor
 public class AuthConfig {
 
@@ -64,13 +64,12 @@ public class AuthConfig {
         return new CustomAuditAware();
     }
 
-//    @Bean
-//    public RoleHierarchyImpl roleHierarchy(RoleHierarchyService roleHierarchyService){
-//
-//        String allHierarchy = roleHierarchyService.findAllHierarchy();
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        roleHierarchy.setHierarchy(allHierarchy);
-//
-//        return roleHierarchy;
-//    }
+    @Bean
+    public RoleHierarchyImpl roleHierarchy(RoleHierarchyService roleHierarchyService) {
+
+        String allHierarchy = roleHierarchyService.findAllHierarchy();
+        RoleHierarchyImpl roleHierarchy = RoleHierarchyImpl.fromHierarchy(allHierarchy);
+
+        return roleHierarchy;
+    }
 }

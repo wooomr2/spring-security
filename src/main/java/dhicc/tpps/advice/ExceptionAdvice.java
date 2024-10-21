@@ -19,15 +19,14 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(DhiccException.class)
     public ResponseEntity<ErrorResponse> DhiccException(DhiccException e) {
-        int status = e.getStatusCode();
 
         ErrorResponse body = ErrorResponse.builder()
-                .code(status)
+                .code(e.getStatusCode())
                 .message(e.getMessage())
                 .validation(e.getValidation())
                 .build();
 
-        return ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(e.getStatusCode()).body(body);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,43 +47,34 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
-        log.error(" === NOT_FOUND EXCEPTION ===", e);
-
-        int status = HttpStatus.NOT_FOUND.value();
 
         ErrorResponse body = ErrorResponse.builder()
-                .code(status)
+                .code(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
                 .build();
 
-        return ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(body);
     }
 
     @ExceptionHandler({JwtException.class, ExpiredJwtException.class})
     public ResponseEntity<ErrorResponse> handleExpiredJwtException(NoResourceFoundException e) {
-        int status = HttpStatus.UNAUTHORIZED.value();
 
         ErrorResponse body = ErrorResponse.builder()
-                .code(status)
+                .code(HttpStatus.UNAUTHORIZED.value())
                 .message(e.getMessage())
                 .build();
 
-        return ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(body);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception e) {
-        log.error(" === INTERNAL_SERVER_ERROR ===", e);
-
-        int status = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
         ErrorResponse body = ErrorResponse.builder()
-                .code(status)
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.getMessage())
                 .build();
 
-        return ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(body);
     }
-
-    //TODO:: Add more exception handler
 }
