@@ -17,8 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signupResident(@RequestBody @Valid SignupRequest req) {
+    public ResponseEntity<String> signup(@RequestBody @Valid SignupRequest req) {
         authService.signup(req);
-        return ResponseEntity.ok("입주민 회원가입 성공");
+        return ResponseEntity.ok("회원가입 성공");
     }
 }
