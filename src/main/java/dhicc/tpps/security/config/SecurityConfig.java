@@ -37,6 +37,7 @@ public class SecurityConfig {
     private final CustomLogoutHandler customLogoutHandler;
 
     private static final String[] WHITE_LIST_URL = {
+            "health-check",
             "/api/v1/auth/**",
             "/api/v1/auth/signup",
             "/v1/api-docs/**",
