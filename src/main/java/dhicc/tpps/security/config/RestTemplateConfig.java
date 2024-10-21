@@ -13,6 +13,7 @@ import java.time.Duration;
 
 @Configuration
 public class RestTemplateConfig {
+    //TODO :: properties로 변경
     private static final long CONNECTION_TIMEOUT = 10000L;
     private static final long READ_TIMEOUT = 10000L;
 

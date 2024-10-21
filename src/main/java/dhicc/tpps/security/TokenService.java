@@ -4,16 +4,14 @@ import dhicc.tpps.entity.RefreshToken;
 import dhicc.tpps.entity.User;
 import dhicc.tpps.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class TokenService {
-    
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     public List<RefreshToken> findValidRefreshTokens(User user) {

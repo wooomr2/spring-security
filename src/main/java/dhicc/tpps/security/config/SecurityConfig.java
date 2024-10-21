@@ -1,6 +1,6 @@
 package dhicc.tpps.security.config;
 
-import dhicc.tpps.entity.Role;
+import dhicc.tpps.entity.ENUM_ROLE;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.filter.JwtAuthenticationFilter;
 import dhicc.tpps.security.filter.JwtExceptionFilter;
@@ -75,7 +75,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
+                                .requestMatchers("/api/v1/admin/**").hasRole(ENUM_ROLE.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )

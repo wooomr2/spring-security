@@ -6,10 +6,12 @@ import dhicc.tpps.security.CustomAuditAware;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.handler.LoginFailHandler;
 import dhicc.tpps.security.handler.LoginSuccessHandler;
+import dhicc.tpps.security.service.RoleHierarchyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -62,5 +64,15 @@ public class AuthConfig {
     @Bean
     public AuditorAware<Long> auditorAware() {
         return new CustomAuditAware();
+    }
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy(RoleHierarchyService roleHierarchyService){
+
+        String allHierarchy = roleHierarchyService.findAllHierarchy();
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy(allHierarchy);
+
+        return roleHierarchy;
     }
 }

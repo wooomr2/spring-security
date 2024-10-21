@@ -1,7 +1,7 @@
 package dhicc.tpps.api.v1.auth;
 
 import dhicc.tpps.api.v1.auth.request.SignupRequest;
-import dhicc.tpps.entity.Role;
+import dhicc.tpps.entity.ENUM_ROLE;
 import dhicc.tpps.entity.User;
 import dhicc.tpps.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class AuthService {
         userRepository.save(User.builder()
                 .email(req.getEmail())
                 .password(passwordEncoder.encode(req.getPassword()))
-                .role(Role.RESIDENT)
+                .role(ENUM_ROLE.RESIDENT)
                 .build());
     }
 }
