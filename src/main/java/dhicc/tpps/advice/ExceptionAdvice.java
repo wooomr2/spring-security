@@ -9,10 +9,24 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdvice {
+
+    @ExceptionHandler(DhiccException.class)
+    public ResponseEntity<ErrorResponse> DhiccException(DhiccException e) {
+        int status = e.getStatusCode();
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(status)
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        return ResponseEntity.status(status).body(body);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -30,18 +44,22 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(DhiccException.class)
-    public ResponseEntity<ErrorResponse> DhiccException(DhiccException e) {
-        int status = e.getStatusCode();
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        log.error(" === NOT_FOUND EXCEPTION ===", e);
+
+        int status = HttpStatus.NOT_FOUND.value();
 
         ErrorResponse body = ErrorResponse.builder()
                 .code(status)
                 .message(e.getMessage())
-                .validation(e.getValidation())
                 .build();
 
         return ResponseEntity.status(status).body(body);
     }
+
+
+    //TODO:: Add more exception handler
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception e) {
@@ -56,6 +74,4 @@ public class ExceptionAdvice {
 
         return ResponseEntity.status(status).body(body);
     }
-
-    //TODO:: Add more exception handler
 }

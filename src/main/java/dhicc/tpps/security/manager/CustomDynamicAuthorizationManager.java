@@ -30,13 +30,13 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
 
     List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
 
+    // Spring
+    private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
+    private final HandlerMappingIntrospector handlerMappingIntrospector;
+    private final RoleHierarchyImpl roleHierarchy;
     // 구현
     private final ResourceRepository resourceRepository;
     private DynamicAuthorizationService dynamicAuthorizationService;
-
-    private final HandlerMappingIntrospector handlerMappingIntrospector;
-    private final RoleHierarchyImpl roleHierarchy;
-
 
     @PostConstruct
     public void mapping() {
@@ -58,21 +58,20 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
     }
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
+    public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext context) {
 
         for (RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>> mapping : this.mappings) {
             RequestMatcher matcher = mapping.getRequestMatcher();
+            RequestMatcher.MatchResult matchResult = matcher.matcher(context.getRequest());
 
+            if (matchResult.isMatch()) {
+                AuthorizationManager<RequestAuthorizationContext> manager = mapping.getEntry();
+
+                return manager.check(authentication, new RequestAuthorizationContext(context.getRequest(), matchResult.getVariables()));
+            }
         }
-    }
 
-    public synchronized void reload() {
-        this.mappings = dynamicAuthorizationService.getUrlRolaMappings().entrySet().stream().map(
-                entry -> new RequestMatcherEntry<>(
-                        new AntPathRequestMatcher(entry.getKey()),
-                        customAuthorizationManager(entry.getValue())
-                )
-        ).collect(Collectors.toList());
+        return ACCESS;
     }
 
     private AuthorizationManager<RequestAuthorizationContext> customAuthorizationManager(String role) {
@@ -92,4 +91,12 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
         }
     }
 
+    public synchronized void reload() {
+        this.mappings = dynamicAuthorizationService.getUrlRolaMappings().entrySet().stream().map(
+                entry -> new RequestMatcherEntry<>(
+                        new AntPathRequestMatcher(entry.getKey()),
+                        customAuthorizationManager(entry.getValue())
+                )
+        ).collect(Collectors.toList());
+    }
 }

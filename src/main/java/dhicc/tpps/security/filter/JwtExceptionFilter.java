@@ -31,12 +31,14 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws IOException {
+
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException ex) {
             log.error("JwtException: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "JWT 인증 오류");
         } catch (Exception ex) {
+            // TODO:: 인증 관련 Exception만 발라내기
             log.error("Exception: {}", ex.getMessage());
             sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "SPRING-SECURITY INTERNAL_SERVER_ERROR");
         }

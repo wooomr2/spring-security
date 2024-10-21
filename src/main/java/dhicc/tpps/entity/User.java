@@ -8,8 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -30,10 +30,6 @@ public class User extends BaseEntity implements UserDetails {
 
     private String password;
 
-    //    TODO:: 다중롤
-    @Enumerated(EnumType.STRING)
-    private ENUM_ROLE role;
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinTable(name = "tb_user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -48,6 +44,11 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return userRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toSet())
+                .stream()
+                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
+
 }

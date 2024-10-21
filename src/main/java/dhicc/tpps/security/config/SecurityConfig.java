@@ -1,6 +1,5 @@
 package dhicc.tpps.security.config;
 
-import dhicc.tpps.entity.ENUM_ROLE;
 import dhicc.tpps.security.filter.AuthProcessingFilter;
 import dhicc.tpps.security.filter.JwtAuthenticationFilter;
 import dhicc.tpps.security.filter.JwtExceptionFilter;
@@ -37,11 +36,12 @@ public class SecurityConfig {
     private final CustomLogoutHandler customLogoutHandler;
 
     private static final String[] WHITE_LIST_URL = {
+            "/test/**", // TODO:: 삭제, local,dev 일때만 허용하는 방법 찾기
+            "/health-check",
             "/api/v1/auth/**",
-            "/api/v1/auth/signup",
             "/v1/api-docs/**",
             "/swagger-resources/**",
-            "/swagger-ui/**",
+            "/swagger-ui/**"
     };
 
     private static final String[] ALLOWED_ORIGINS = {
@@ -70,12 +70,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(v -> v.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/admin/**").hasRole(ENUM_ROLE.ADMIN.name())
+                                .requestMatchers("/api/v1/user").hasAnyAuthority("ROLE_USER")
+                                .requestMatchers("/api/v1/manager").hasAuthority("ROLE_MANAGER")
+                                .requestMatchers("/api/v1/admin").hasAuthority("ROLE_ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )

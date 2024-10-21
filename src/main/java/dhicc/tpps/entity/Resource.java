@@ -37,7 +37,7 @@ public class Resource implements Serializable {
     private String resourceType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "role_resource", joinColumns = {@JoinColumn(name = "resource_id")},
+    @JoinTable(name = "tb_role_resource", joinColumns = {@JoinColumn(name = "resource_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     @ToString.Exclude
     private Set<Role> roleSet = new HashSet<>();
